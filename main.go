@@ -49,7 +49,7 @@ func getCreateCategoryHandler (w http.ResponseWriter, r *http.Request) {
 func getCategoryByID(w http.ResponseWriter, r *http.Request) {
 	// Parse ID dari URL path
 	// URL: /api/category/123 -> ID = 123
-	idStr := strings.TrimPrefix(r.URL.Path, "/api/category/")
+	idStr := strings.TrimPrefix(r.URL.Path, "/api/categories/")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
 		http.Error(w, "Invalid Category ID", http.StatusBadRequest)
@@ -72,7 +72,7 @@ func getCategoryByID(w http.ResponseWriter, r *http.Request) {
 
 func updateCategory(w http.ResponseWriter, r *http.Request) {
 	// get id dari request
-	idStr := strings.TrimPrefix(r.URL.Path, "/api/category/")
+	idStr := strings.TrimPrefix(r.URL.Path, "/api/categories/")
 
 	// ganti int
 	id, err := strconv.Atoi(idStr)
@@ -107,7 +107,7 @@ func updateCategory(w http.ResponseWriter, r *http.Request) {
 
 func deleteCategory(w http.ResponseWriter, r *http.Request) {
 	// get id
-	idStr := strings.TrimPrefix(r.URL.Path, "/api/category/")
+	idStr := strings.TrimPrefix(r.URL.Path, "/api/categories/")
 	
 	// ganti id int
 	id, err := strconv.Atoi(idStr)
