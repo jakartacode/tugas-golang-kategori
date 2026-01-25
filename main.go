@@ -137,9 +137,9 @@ func deleteCategory(w http.ResponseWriter, r *http.Request) {
 
 func main(){
 
-	http.HandleFunc("/api/category", getCreateCategoryHandler)
+	http.HandleFunc("/api/categories", getCreateCategoryHandler)
 
-	http.HandleFunc("/api/category/", func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("/api/categories/", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == "GET" {
 			getCategoryByID(w, r)
 		} else if r.Method == "PUT" {
