@@ -36,7 +36,6 @@ func main(){
 		DBConn: viper.GetString("DB_CONN"),
 	}
 
-	// Setup database
 	db, err := database.InitDB(config.DBConn)
 
 	if err != nil {
@@ -56,8 +55,8 @@ func main(){
 	http.HandleFunc("/api/categories", categoryHandler.HandleCategories)
 	http.HandleFunc("/api/categories/", categoryHandler.HandleCategoryByID)
 
-	http.HandleFunc("/api/produk", productHandler.HandleProducts)
-	http.HandleFunc("/api/produk/", productHandler.HandleProductByID)
+	http.HandleFunc("/api/products", productHandler.HandleProducts)
+	http.HandleFunc("/api/products/", productHandler.HandleProductByID)
 
 	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
