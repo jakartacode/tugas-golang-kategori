@@ -1,2 +1,6 @@
 .env
 *.exe
+seeders/
+migrations/
+migrate.go
+seed.go

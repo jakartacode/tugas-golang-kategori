@@ -1,16 +1,17 @@
 package main
 
-import ( 
+import (
 	"encoding/json"
-	"net/http"
-	"os"
 	"fmt"
-	"log"
-	"strings"
 	"kasir-api/database"
+	"kasir-api/handlers"
 	"kasir-api/repositories"
 	"kasir-api/services"
-	"kasir-api/handlers"
+	"log"
+	"net/http"
+	"os"
+	"strings"
+
 	"github.com/spf13/viper"
 )
 
@@ -18,7 +19,6 @@ type Config struct {
 	Port    string `mapstructure:"PORT"`
 	DBConn string `mapstructure:"DB_CONN"`
 }
-
 
 
 func main(){
@@ -47,16 +47,29 @@ func main(){
 	categoryRepo := repositories.NewCategoryRepository(db)
 	categoryService := services.NewCategoryService(categoryRepo)
 	categoryHandler := handlers.NewCategoryHandler(categoryService)
-
+	
 	productRepo := repositories.NewProductRepository(db)
 	productService := services.NewProductService(productRepo)
 	productHandler := handlers.NewProductHandler(productService)
+
+	transactionRepo := repositories.NewTransactionRepository(db)
+	transactionService := services.NewTransactionService(transactionRepo)
+	transactionHandler := handlers.NewTransactionHandler(transactionService)
+
+	reportRepo := repositories.NewReportRepository(db)
+	reportService := services.NewReportService(reportRepo)
+	reportHandler := handlers.NewReportHandler(reportService)
 
 	http.HandleFunc("/api/categories", categoryHandler.HandleCategories)
 	http.HandleFunc("/api/categories/", categoryHandler.HandleCategoryByID)
 
 	http.HandleFunc("/api/produk", productHandler.HandleProducts)
 	http.HandleFunc("/api/produk/", productHandler.HandleProductByID)
+
+	http.HandleFunc("/api/checkout", transactionHandler.HandleCheckout)
+
+	http.HandleFunc("/api/report/hari-ini", reportHandler.HandleReportToday)
+	http.HandleFunc("/api/report", reportHandler.HandleReportRange)
 
 	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
