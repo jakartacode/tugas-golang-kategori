@@ -7,6 +7,7 @@ import (
 	"kasir-api/handlers"
 	"kasir-api/repositories"
 	"kasir-api/services"
+	"kasir-api/middlewares"
 	"log"
 	"net/http"
 	"os"
@@ -18,6 +19,7 @@ import (
 type Config struct {
 	Port    string `mapstructure:"PORT"`
 	DBConn string `mapstructure:"DB_CONN"`
+	API_KEY string `mapstructure:"API_KEY"`
 }
 
 
@@ -32,8 +34,9 @@ func main(){
 	}
 
 	config := Config{
-		Port:   viper.GetString("PORT"),
+		Port: viper.GetString("PORT"),
 		DBConn: viper.GetString("DB_CONN"),
+		API_KEY: viper.GetString("API_KEY"),
 	}
 
 	db, err := database.InitDB(config.DBConn)
@@ -60,13 +63,15 @@ func main(){
 	reportService := services.NewReportService(reportRepo)
 	reportHandler := handlers.NewReportHandler(reportService)
 
+	apiKeyMiddleware := middlewares.APIKey(config.API_KEY)
+
 	http.HandleFunc("/api/categories", categoryHandler.HandleCategories)
 	http.HandleFunc("/api/categories/", categoryHandler.HandleCategoryByID)
 
-	http.HandleFunc("/api/produk", productHandler.HandleProducts)
-	http.HandleFunc("/api/produk/", productHandler.HandleProductByID)
+	http.HandleFunc("/api/produk", middlewares.CORS(productHandler.HandleProducts))
+	http.HandleFunc("/api/produk/", middlewares.CORS(apiKeyMiddleware(productHandler.HandleProductByID)))
 
-	http.HandleFunc("/api/checkout", transactionHandler.HandleCheckout)
+	http.HandleFunc("/api/checkout", middlewares.CORS(apiKeyMiddleware(transactionHandler.HandleCheckout)))
 
 	http.HandleFunc("/api/report/hari-ini", reportHandler.HandleReportToday)
 	http.HandleFunc("/api/report", reportHandler.HandleReportRange)

@@ -1,1 +1,1 @@
-# Kasir API
+# Simple API
